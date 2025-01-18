@@ -1,0 +1,98 @@
+{% extends 'base/base.html' %}
+{% block start %}
+<style>
+    .card:hover {
+        box-shadow: 2px 2px 15px #fd9a6ce5;
+        transform: scale(1.02)
+    }
+
+    .card .product-name {
+        padding-top: 15px;
+        font-weight: 600
+    }
+
+    .card .product-price {
+        /* padding-top: 15px; */
+        font-weight: 600;
+        /* background-color: rgb(50, 82, 153); */
+    }
+
+    .card-body {
+        padding-bottom: 0
+    }
+
+    .card .text-muted {
+        font-size: 0.82rem
+    }
+
+    .card-img img {
+        padding-top: 10px;
+        width: inherit;
+        height: 180px;
+        object-fit: contain;
+        display: block;
+    }
+
+    .card-body .btn-group .btn {
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+        border-radius: 50%;
+        position: relative
+    }
+
+    .card-body input[type="radio"] {
+        visibility: hidden
+    }
+</style>
+
+<div class="container mt-3 pt-3">
+    <div class="row">
+        <div class="col-md-3">
+            <figure class="card card-product-grid align-items-center">
+                <div class="product-name">{{product.product_name}}</div>
+                    <div class="card-img"> <img src="/media/{{product.product_images.first.image}}" alt="" height="100"></div>
+                <div class="card-body pt-2">
+                    <div class="d-flex align-items-center justify-content-center colors my-2">
+                        <div class="d-flex align-items-center price">
+                            <!-- <div class="del mr-2"><span class="text-dark">12300 ₹</span></div> -->
+                            <div class="product-price">₹ {{product.price}}</div>
+                        </div>
+                    </div>
+                </div>
+            </figure>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+<!-- <div class="col-lg-4 col-md-6 pt-md-0 pt-3">
+    <div class="card d-flex flex-column align-items-center">
+        <div class="product-name">Nike Tshirts for Men</div>
+        <div class="card-img"> <img
+                src="https://www.freepnglogos.com/uploads/t-shirt-png/t-shirt-png-printed-shirts-south-africa-20.png"
+                alt="" height="100" id="shirt"> </div>
+
+        <div class="card-body pt-5">
+            <div class="text-muted text-center mt-auto">Available Colors</div>
+            <div class="d-flex align-items-center justify-content-center colors my-2">
+                <div class="btn-group" data-toggle="buttons" data-tooltip="tooltip" data-placement="right"
+                    title="choose color"> <label class="btn btn-red form-check-label"> <input class="form-check-input"
+                            type="radio" autocomplete="off"> </label> <label
+                        class="btn btn-blue form-check-label active"> <input class="form-check-input" type="radio"
+                            autocomplete="off"> </label> <label class="btn btn-green form-check-label"> <input
+                            class="form-check-input" type="radio" autocomplete="off"> </label> <label
+                        class="btn btn-orange form-check-label"> <input class="form-check-input" type="radio"
+                            autocomplete="off"> </label> <label class="btn btn-pink form-check-label"> <input
+                            class="form-check-input" type="radio" autocomplete="off"> </label> </div>
+            </div>
+            <div class="d-flex align-items-center price">
+                <div class="del mr-2"><span class="text-dark">12300 ₹</span></div>
+                <div class="font-weight-bold">10500 ₹</div>
+            </div>
+        </div>
+    </div>
+</div> -->
