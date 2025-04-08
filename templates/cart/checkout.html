@@ -1,0 +1,95 @@
+{% extends 'base/base.html' %}
+{% block start %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg p-4 rounded">
+                <h2 class="text-center mb-4 text-primary">Checkout</h2>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <h4 class="mb-3">Billing Address</h4>
+
+                    {% with addresses|first as address %}
+                    {% if address %}
+                    <div class="card p-3 mb-3 shadow-sm">
+                        <p><strong>{{ address.name }}</strong></p>
+                        <p>{{ address.street }}, {{ address.city }}, {{ address.state }} - {{ address.zipcode }}</p>
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal"
+                            data-bs-target="#addressModal">
+                            Change Address
+                        </button>
+                        <input type="hidden" name="selected_address" value="{{ address.uid }}">
+                    </div>
+                    {% else %}
+                    <p>No address found. Please add an address to continue.</p>
+                    <a href="{% url 'add_address' %}" class="btn btn-primary">Add Address</a>
+                    {% endif %}
+                    {% endwith %}
+
+                    <h4 class="mt-4 mb-3">Order Summary</h4>
+                    <ul class="list-group mb-3">
+                        {% for item in cart_items %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>{{ item.product.product_name }}</strong>
+                            <div>
+                                ₹{{ item.product.price }}
+                                <a href="{% url 'cart:decrease_quantity' item.id %}"
+                                    class="btn btn-sm btn-warning">➖</a>
+                                <span class="mx-2">{{ item.quantity }}</span>
+                                <a href="{% url 'cart:increase_quantity' item.id %}"
+                                    class="btn btn-sm btn-success">➕</a>
+                                <a href="{% url 'cart:remove_item' item.id %}" class="btn btn-sm btn-danger">❌</a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <p class="fs-5 fw-bold text-end">Total Amount: ₹{{ total_price }}</p>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm">Place Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Address Selection Modal -->
+<div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addressModalLabel">Select Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% for address in addresses %}
+                <div class="card p-3 mb-2 shadow-sm">
+                    <p><strong>{{ address.name }}</strong></p>
+                    <p>{{ address.street }}, {{ address.city }}, {{ address.state }} - {{ address.zipcode }}</p>
+                    <button type="button" class="btn btn-sm btn-success select-address" data-id="{{ address.uid }}">
+                        Select
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".select-address").forEach(button => {
+            button.addEventListener("click", function () {
+                let selectedAddressId = this.getAttribute("data-id");
+                document.querySelector("input[name='selected_address']").value = selectedAddressId;
+                location.reload();  // Refresh page to update selected address display
+            });
+        });
+    });
+</script>
+
+{% endblock %}

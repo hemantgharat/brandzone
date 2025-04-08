@@ -1,78 +1,188 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Brand Zone</title>
-    
+    <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="/public/static/favicon_io/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/public/static/favicon_io/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/public/static/favicon_io/favicon-16x16.png">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"
-        integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa"
-        crossorigin="anonymous"></script>
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+    <style>
+        /* Custom Navbar Styling */
+        .navbar {
+            background-color: #004080 !important; /* Dark Navy Blue */
+        }
+
+        .navbar-brand-logo {
+            max-height: 50px; /* Adjust as needed */
+            width: auto;
+        }
+
+        .navbar-brand img {
+            mix-blend-mode: multiply;
+        }
+
+        .navbar-toggler {
+            border: none;
+            outline: none;
+        }
+
+        .search-bar {
+            width: 250px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .search-btn {
+            background-color: #ffcc00;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+        }
+
+        .cart-btn,
+        .profile-btn {
+            background-color: #343a40;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .cart-btn:hover,
+        .profile-btn:hover {
+            background-color: #222;
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-dark" style="background-color: #90d3e4;">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="/media/br.jpg"  width="180" height="40" class="d-inline-block align-top" alt="" style="mix-blend-mode: multiply;"></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
-                aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+
+    <!-- Navbar -->
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/home">
+                <img src="/media/BrandZone-Logo.png" width="180" height="40" class="d-inline-block align-top" alt="" style="mix-blend-mode: multiply;">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarScroll">
-                <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Link
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">Link</a>
-                    </li>
-                </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-warning" type="submit">Search</button>
-                    <button type="button" class="btn btn-dark mx-lg-2" style="width: 150px; height: 40px;">Cart <span class="bi bi-cart"></span></button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto"></ul>
+
+                <!-- Search Form -->
+                <form class="d-flex" method="GET" action="{% url 'product_list' %}">
+                    <input class="form-control search-bar me-2" type="search" name="q" placeholder="Search for products..." aria-label="Search" value="{{ query }}">
+                    <button class="btn search-btn" type="submit"><i class="bi bi-search"></i></button>
                 </form>
+
+
+                <!-- Cart & Profile Buttons -->
+                <button type="button" class="btn cart-btn mx-2" data-bs-toggle="offcanvas" data-bs-target="#cartSidebar" onclick="loadCartData()">
+                    Cart <i class="bi bi-cart"></i>
+                </button>
+                
+                <!-- Orders Button -->
+                <button type="button" class="btn cart-btn mx-2" onclick="window.location.href='{% url 'cart:my_orders' %}'">
+                    Orders <i class="bi bi-bucket-fill"></i>
+                </button>
+
+                <!-- Profile Dropdown -->
+                <div class="dropdown">
+                    <button class="btn profile-btn dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-lines-fill"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="/profile">View Profile</a></li>
+                        <li><a class="dropdown-item" href="/update-profile">Update Profile</a></li>
+                        <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-        crossorigin="anonymous"></script>
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-        
+    <!-- Offcanvas Sidebar -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartSidebar" aria-labelledby="cartSidebarLabel">
+        <div class="offcanvas-header">
+            <h5 id="cartSidebarLabel">Your Cart</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="cart-items-container">
+                <p>Loading cart items...</p>
+            </div>
+            <a href="/cart/checkout/" class="btn btn-primary mt-3">Checkout</a>
+        </div>
+    </div>
+
+    <div class="container my-4">
         {% block start %}
-            
         {% endblock %}
-            
-    </body>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function loadCartData() {
+            fetch("/cart/data/")  // API call to get cart data
+                .then(response => response.json())
+                .then(data => {
+                    const cartContainer = document.getElementById("cart-items-container");
+                    cartContainer.innerHTML = ""; // Clear previous items
+        
+                    if (data.cart_items.length === 0) {
+                        cartContainer.innerHTML = "<p>Your cart is empty.</p>";
+                        return;
+                    }
+        
+                    data.cart_items.forEach(item => {
+                        const itemHTML = `
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="${item.image}" alt="${item.name}" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                                <div>
+                                    <h6 class="mb-0">${item.name}</h6>
+                                    <p class="mb-0">₹${item.price} x ${item.quantity}</p>
+                                </div>
+                            </div>
+                        `;
+                        cartContainer.innerHTML += itemHTML;
+                    });
+                })
+                .catch(error => console.error("Error fetching cart data:", error));
+        }
+        </script>
+        
+</body>
 
 </html>

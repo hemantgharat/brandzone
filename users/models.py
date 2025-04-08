@@ -14,6 +14,7 @@ class Profile(BaseModel):
     is_email_verified = models.BooleanField(default=False)
     email_token = models.CharField(max_length=100, null=True, blank=True)
     user_image = models.ImageField(upload_to='profile')
+    phone = models.CharField(max_length=15, null=True, blank=True)
 
 
 @receiver(post_save, sender=User)
@@ -27,3 +28,16 @@ def send_mail_token(sender, instance, created, **kwargs):
 
     except Exception as e:
         print(e)
+        
+
+class Address(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="addresses")
+    name = models.CharField(max_length=255)
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zipcode = models.CharField(max_length=10)
+    is_default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.street}, {self.city}"

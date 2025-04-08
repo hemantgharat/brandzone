@@ -1,98 +1,137 @@
 {% extends 'base/base.html' %}
 {% block start %}
 <style>
-    .card:hover {
-        box-shadow: 2px 2px 15px #fd9a6ce5;
-        transform: scale(1.02)
+    .product-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
     }
 
-    .card .product-name {
-        padding-top: 15px;
-        font-weight: 600
+    .product-images {
+        width: 40%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
-    .card .product-price {
-        /* padding-top: 15px; */
-        font-weight: 600;
-        /* background-color: rgb(50, 82, 153); */
-    }
-
-    .card-body {
-        padding-bottom: 0
-    }
-
-    .card .text-muted {
-        font-size: 0.82rem
-    }
-
-    .card-img img {
-        padding-top: 10px;
-        width: inherit;
-        height: 180px;
+    .product-images img {
+        width: 100%;
+        height: auto;
+        max-height: 350px;
         object-fit: contain;
-        display: block;
+        border-radius: 8px;
     }
 
-    .card-body .btn-group .btn {
-        padding: 0;
-        width: 20px;
-        height: 20px;
-        margin-right: 5px;
-        border-radius: 50%;
-        position: relative
+    .product-thumbnails {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
     }
 
-    .card-body input[type="radio"] {
-        visibility: hidden
+    .product-thumbnails img {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        cursor: pointer;
+        border: 2px solid transparent;
+        border-radius: 5px;
+        transition: 0.3s;
+    }
+
+    .product-thumbnails img:hover,
+    .product-thumbnails img.active {
+        border: 2px solid #fd9a6c;
+    }
+
+    .product-details {
+        width: 50%;
+        padding: 20px;
+    }
+
+    .product-name {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .product-description {
+        font-size: 16px;
+        margin-bottom: 15px;
+        color: #555;
+    }
+
+    .product-price {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .btn-buy,
+    .btn-cart {
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+        margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .product-container {
+            flex-direction: column;
+        }
+
+        .product-images,
+        .product-details {
+            width: 100%;
+            text-align: center;
+        }
     }
 </style>
 
-<div class="container mt-3 pt-3">
-    <div class="row">
-        <div class="col-md-3">
-            <figure class="card card-product-grid align-items-center">
-                <div class="product-name">{{product.product_name}}</div>
-                    <div class="card-img"> <img src="/media/{{product.product_images.first.image}}" alt="" height="100"></div>
-                <div class="card-body pt-2">
-                    <div class="d-flex align-items-center justify-content-center colors my-2">
-                        <div class="d-flex align-items-center price">
-                            <!-- <div class="del mr-2"><span class="text-dark">12300 ₹</span></div> -->
-                            <div class="product-price">₹ {{product.price}}</div>
-                        </div>
-                    </div>
-                </div>
-            </figure>
+<div class="container mt-5">
+    <div class="product-container">
+        <!-- Left Side: Product Images -->
+        <div class="product-images">
+            <img id="mainImage" src="/media/{{ product.product_images.first.image }}" alt="{{ product.product_name }}">
+            <div class="product-thumbnails">
+                {% for image in product.product_images.all %}
+                <img src="/media/{{ image.image }}" alt="{{ product.product_name }}" onclick="changeImage(this)">
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Right Side: Product Details -->
+        <div class="product-details">
+            <div class="product-name">{{ product.product_name }}</div>
+            <div class="product-description">{{ product.product_description }}</div>
+            <div class="product-price">₹ {{ product.price }}</div>
+            <form action="{% url 'cart:add_to_cart' product.uid %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-warning btn-cart">Add to Cart</button>
+            </form>
+            
+            <form action="{% url 'cart:buy_now' product.uid %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success btn-buy">Buy Now</button>
+            </form>
+            
         </div>
     </div>
 </div>
+
+<!-- JavaScript for Image Switching -->
+<script>
+    function changeImage(smallImg) {
+        let mainImage = document.getElementById("mainImage");
+        mainImage.src = smallImg.src;
+
+        // Remove 'active' class from all images
+        document.querySelectorAll(".product-thumbnails img").forEach(img => img.classList.remove("active"));
+
+        // Add 'active' class to clicked image
+        smallImg.classList.add("active");
+    }
+</script>
+
 {% endblock %}
-
-
-
-<!-- <div class="col-lg-4 col-md-6 pt-md-0 pt-3">
-    <div class="card d-flex flex-column align-items-center">
-        <div class="product-name">Nike Tshirts for Men</div>
-        <div class="card-img"> <img
-                src="https://www.freepnglogos.com/uploads/t-shirt-png/t-shirt-png-printed-shirts-south-africa-20.png"
-                alt="" height="100" id="shirt"> </div>
-
-        <div class="card-body pt-5">
-            <div class="text-muted text-center mt-auto">Available Colors</div>
-            <div class="d-flex align-items-center justify-content-center colors my-2">
-                <div class="btn-group" data-toggle="buttons" data-tooltip="tooltip" data-placement="right"
-                    title="choose color"> <label class="btn btn-red form-check-label"> <input class="form-check-input"
-                            type="radio" autocomplete="off"> </label> <label
-                        class="btn btn-blue form-check-label active"> <input class="form-check-input" type="radio"
-                            autocomplete="off"> </label> <label class="btn btn-green form-check-label"> <input
-                            class="form-check-input" type="radio" autocomplete="off"> </label> <label
-                        class="btn btn-orange form-check-label"> <input class="form-check-input" type="radio"
-                            autocomplete="off"> </label> <label class="btn btn-pink form-check-label"> <input
-                            class="form-check-input" type="radio" autocomplete="off"> </label> </div>
-            </div>
-            <div class="d-flex align-items-center price">
-                <div class="del mr-2"><span class="text-dark">12300 ₹</span></div>
-                <div class="font-weight-bold">10500 ₹</div>
-            </div>
-        </div>
-    </div>
-</div> -->

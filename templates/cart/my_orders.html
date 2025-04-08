@@ -1,0 +1,155 @@
+{% extends 'base/base.html' %}
+
+{% block start %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .orders-container {
+        max-width: 900px;
+        margin: 50px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .filter-section {
+        text-align: right;
+        margin-bottom: 20px;
+    }
+
+    .filter-section select {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background: #007bff;
+        color: white;
+    }
+
+    .status-pending {
+        color: #ffc107;
+        font-weight: bold;
+    }
+
+    .status-completed {
+        color: #28a745;
+        font-weight: bold;
+    }
+
+    .btn-details {
+        background: #007bff;
+        color: white;
+        padding: 5px 10px;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: 0.3s;
+        display: inline-block;
+    }
+
+    .btn-details:hover {
+        background: #0056b3;
+    }
+
+    .btn-cancel {
+        background: #dc3545;
+        color: white;
+        padding: 5px 10px;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: 0.3s;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-cancel:hover {
+        background: #b52b39;
+    }
+</style>
+
+<div class="orders-container">
+    <h2>🛍️ My Orders</h2>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <form method="GET">
+            <label for="status">Filter by Status:</label>
+            <select name="status" id="status" onchange="this.form.submit()">
+                <option value="" {% if not request.GET.status %}selected{% endif %}>All</option>
+                <option value="Pending" {% if request.GET.status == 'Pending' %}selected{% endif %}>Pending</option>
+                <option value="Completed" {% if request.GET.status == 'Completed' %}selected{% endif %}>Completed</option>
+            </select>
+        </form>
+    </div>
+
+    {% if orders %}
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Status</th>
+                <th>Placed On</th>
+                <th>Items</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.uid }}</td>
+                <td class="{% if order.status == 'Pending' %}status-pending{% else %}status-completed{% endif %}">
+                    {{ order.status }}
+                </td>
+                <td>
+                    {{ order.created_at }}
+                </td>
+                <td>
+                    {% for item in order.orderitem_set.all %}
+                        {{ item.product.product_name }} (x{{ item.quantity }})<br><br>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for item in order.orderitem_set.all %}
+                        <a href="{% url 'get_product' item.product.slug %}" class="btn-details">View</a><br><br>
+                    {% endfor %}
+                    
+                    {% if order.status == 'Pending' %}
+                        <form method="POST" action="{% url 'cart:cancel_order' order.uid %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-cancel">Cancel</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p style="text-align: center; color: #777;">You have no orders yet.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

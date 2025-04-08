@@ -1,0 +1,77 @@
+{% extends 'base/base.html' %}
+
+{% block start %}
+<style>
+    .product-card {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+        background: white;
+        height: 100%;
+    }
+    
+    .product-card:hover {
+        transform: scale(1.05);
+    }
+
+    .product-image {
+        object-fit: cover;
+        border-radius: 10px;
+        padding-top: 10px;
+        width: inherit;
+        height: 180px;
+        object-fit: contain;
+    }
+
+    .product-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 10px 0;
+        color: #333;
+    }
+
+    .product-price {
+        font-size: 16px;
+        color: #28a745;
+        font-weight: bold;
+    }
+
+    .btn-buy {
+        margin-top: 10px;
+        background: #007bff;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-buy:hover {
+        background: #0056b3;
+    }
+</style>
+
+<div class="container">
+    <h2 class="text-center my-4">Search Results</h2>
+
+    {% if products %}
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="product-card">
+                <img src="/media/{{product.product_images.first.image}}" alt="{{ product.product_name }}" class="product-image">
+                <h3 class="product-title">{{ product.product_name }}</h3>
+                <p class="product-price">$ {{ product.price }}</p>
+                <a href="{% url 'get_product' product.slug %}" class="btn-buy">View Product</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p class="text-center text-muted">No products found for "{{ query }}".</p>
+    {% endif %}
+</div>
+{% endblock %}
